@@ -27,7 +27,7 @@ const reviewSchema = mongoose.Schema(
 
 const productSchema = mongoose.Schema(
   {
-    seller: {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: 'User',
@@ -45,7 +45,6 @@ const productSchema = mongoose.Schema(
     category: {
       type: String,
       required: true,
-      enum: ['vegetables', 'fruits', 'grains', 'pulses', 'dairy', 'spices', 'other'],
     },
     description: {
       type: String,
@@ -72,55 +71,51 @@ const productSchema = mongoose.Schema(
       required: true,
       default: 0,
     },
-    unit: {
-      type: String,
+    harvestDate: {
+      type: Date,
       required: true,
-      enum: ['kg', 'g', 'l', 'ml', 'piece', 'dozen', 'packet'],
-      default: 'kg',
     },
-    tags: [
-      {
+    quality: {
+      grade: {
         type: String,
+        enum: ['A+', 'A', 'B', 'C'],
+        default: 'B',
       },
-    ],
-    aiData: {
-      qualityGrade: {
+      verifiedBy: {
         type: String,
-        enum: ['A+', 'A', 'B', 'C', 'Ungraded'],
-        default: 'Ungraded',
-      },
-      predictedPrice: {
-        type: Number,
-        default: 0,
-      },
-      bestTimeToSell: {
-        type: String,
-        default: '',
-      },
-      marketTrend: {
-        type: String,
-        enum: ['rising', 'falling', 'stable', 'unknown'],
-        default: 'unknown',
-      },
-      confidenceScore: {
-        type: Number,
-        min: 0,
-        max: 100,
-        default: 0,
+        default: 'AI Analysis',
       },
     },
-    blockchainData: {
-      isVerified: {
+    location: {
+      type: {
+        type: String,
+        enum: ['Point'],
+        default: 'Point',
+      },
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
+      address: {
+        type: String,
+        required: true,
+      },
+    },
+    aiInsights: {
+      bestTimeToSell: Date,
+      predictedPriceRange: {
+        min: Number,
+        max: Number,
+      },
+      marketTrends: String,
+      recommendations: String,
+    },
+    blockchainInfo: {
+      contractAddress: String,
+      tokenId: String,
+      verified: {
         type: Boolean,
         default: false,
-      },
-      contractAddress: {
-        type: String,
-        default: '',
-      },
-      transactionHash: {
-        type: String,
-        default: '',
       },
     },
   },
@@ -128,6 +123,9 @@ const productSchema = mongoose.Schema(
     timestamps: true,
   }
 );
+
+// Index for geospatial queries
+productSchema.index({ location: '2dsphere' });
 
 const Product = mongoose.model('Product', productSchema);
 

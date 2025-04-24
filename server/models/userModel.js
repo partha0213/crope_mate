@@ -19,40 +19,39 @@ const userSchema = mongoose.Schema(
     role: {
       type: String,
       required: true,
-      enum: ['buyer', 'seller', 'admin'],
-      default: 'buyer',
+      enum: ['farmer', 'buyer', 'admin'],
+      default: 'farmer',
     },
-    phoneNumber: {
+    phone: {
       type: String,
-      default: '',
+      required: true,
     },
     address: {
-      address: { type: String, default: '' },
-      city: { type: String, default: '' },
-      state: { type: String, default: '' },
-      postalCode: { type: String, default: '' },
-      country: { type: String, default: 'India' },
-    },
-    walletAddress: {
-      type: String,
-      default: '',
+      street: String,
+      city: String,
+      state: String,
+      postalCode: String,
+      country: String,
     },
     profileImage: {
       type: String,
-      default: '',
+      default: '/images/default-profile.jpg',
+    },
+    wallet: {
+      balance: {
+        type: Number,
+        default: 0,
+      },
+      transactions: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Transaction',
+        },
+      ],
     },
     isVerified: {
       type: Boolean,
       default: false,
-    },
-    aiPreferences: {
-      receiveAlerts: { type: Boolean, default: true },
-      alertTypes: {
-        priceDrops: { type: Boolean, default: true },
-        priceSurges: { type: Boolean, default: true },
-        regionalDemand: { type: Boolean, default: true },
-        marketTrends: { type: Boolean, default: true },
-      },
     },
   },
   {
